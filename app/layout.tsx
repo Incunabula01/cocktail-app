@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Montserrat, Poiret_One } from 'next/font/google';
+import Header from './components/header';
 
 const montserrat = Montserrat({
   weight: ['100', '300', '600'],
@@ -26,7 +27,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${montserrat.variable} ${poiretOne.variable} bg-rose-800`}>{children}</body>
+      <body className={`${montserrat.variable} ${poiretOne.variable} bg-rose-800`}>
+        <Header/>
+        {children}
+      </body>
     </html>
   )
 }
