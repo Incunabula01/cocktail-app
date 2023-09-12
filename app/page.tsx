@@ -2,7 +2,7 @@
 import { Drink } from '@/utils/types';
 import Search from './components/search';
 import { useState } from 'react';
-import { cocktailLookahead, getSearchResults } from './api/search/route';
+import { cocktailLookahead, getSearchResults, getRandomResults } from './api/search/route';
 import Card from './components/card';
 
 export default function Home() {
@@ -33,10 +33,25 @@ export default function Home() {
     }
   }
 
+  const handleRandom = async () => {
+    try {
+      const results = await getRandomResults();
+      setSearchResults(results[0]);
+    } catch (error) {
+      console.error('An Error occured!', error);
+    } finally {
+      setSearchItems([]);
+    }
+  }
+
   return (
     <main className="container mx-auto items-center min-h-screen flex flex-col gap-3 mt-[80px]">
       <div className="bg-teal-50 shadow-md rounded-lg p-4 w-full" >
-        <Search onInputChange={handleInputChange} onSelect={handleSelect} searchItems={searchItems}/>
+        <Search 
+          onInputChange={handleInputChange} 
+          onSelect={handleSelect}
+          onRandom={handleRandom} 
+          searchItems={searchItems}/>
         </div>
       <div className="bg-teal-50 shadow-md rounded-lg p-4 sm:w-80 lg:w-full">
           {searchResults !== undefined ? 

@@ -5,7 +5,7 @@ export async function cocktailLookahead(query:string) {
     if(query !== ''){
         
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}?s=${query}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}search.php?s=${query}`);
             const resJSON = await response.json();
             return resJSON.drinks.map((el: { strDrink: Drink; }) => el.strDrink);
 
@@ -18,7 +18,7 @@ export async function cocktailLookahead(query:string) {
 export async function getSearchResults(query: string) {
     if (query !== '') {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}?s=${query}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}search.php?s=${query}`);
             const resJSON = await response.json();
             return resJSON.drinks;
 
@@ -26,4 +26,17 @@ export async function getSearchResults(query: string) {
             console.error('Unexpected error has occured!', error);
         }
     }
+}
+
+export async function getRandomResults() {
+   
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}random.php`);
+            const resJSON = await response.json();
+            return resJSON.drinks;
+
+        } catch (error) {
+            console.error('Unexpected error has occured!', error);
+        }
+    
 }
