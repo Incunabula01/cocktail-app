@@ -1,12 +1,16 @@
-import { Drink } from '@/utils/types';
+import { Drink, Favorite } from '@/utils/types';
 import React from 'react';
 import CustomImage from '../customImage';
-import { SlHeart } from 'react-icons/sl';
+import { IoHeartOutline, IoHeart } from 'react-icons/io5';
 
+type CardProps = {
+    result: Drink;
+    onFavSelect: (fav: Favorite) => void;
+}
 
-export default function Card({result}: {result: Drink}) {
+export default function Card({ result, onFavSelect }: CardProps) {
     
-    const { strDrink, strInstructions, strDrinkThumb } = result;
+    const { idDrink, strDrink, strInstructions, strDrinkThumb, favorite } = result;
 
     const ingredientArray = [];
     
@@ -24,11 +28,13 @@ export default function Card({result}: {result: Drink}) {
 
     return (
         <div className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col lg:flex-row">
-            <CustomImage src={result.strDrinkThumb} alt={result.strDrink} width={600} height={600}/>
+            <CustomImage src={strDrinkThumb} alt={strDrink} width={600} height={600}/>
             <div className="p-4 sm:w-full lg:w-3/4">
                 <div className="flex flex-row  justify-between">
                     <h2 className="text-2xl lg:text-6xl font-semibold">{strDrink}</h2>
-                    <button><SlHeart size="20"/></button>
+                    <button onClick={() => onFavSelect({ idDrink, strDrink })}>
+                        {favorite ? <IoHeart size="20" /> : <IoHeartOutline size="20"/>}
+                    </button>
                 </div>
                 <div className="w-full py-4">
                     <dl>

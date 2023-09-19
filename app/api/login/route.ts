@@ -2,9 +2,13 @@ import { prisma } from "@/prisma";
 import { connectToDb } from "@/utils";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { TOKEN_AGE } from "@/utils";
+import { sign } from "jsonwebtoken";
+import { serialize } from "cookie";
 
 export const POST = async (req: Request) => {
     try {
+        const jwtKey = process.env.JWT_KEY || '';
         const { email, password } = await req.json();
 
         if (!email && !password) {
@@ -22,8 +26,23 @@ export const POST = async (req: Request) => {
         if (!checkPassword) {
             return NextResponse.json({ message: "Invalid Password" }, { status: 403 });
         }
+        const token = sign({ userId: existingUser.email }, jwtKey, {
+            expiresIn: TOKEN_AGE, // Token expiration time
+        });
 
-        return NextResponse.json({ message: "Logged in!" }, { status: 201 });
+        const seralizedCookie = serialize('OutSiteJWT', token, {
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: TOKEN_AGE,
+            path: '/'
+        });
+
+        return NextResponse.json({ message: "Logged in!", token }, {
+            status: 201, 
+            headers: {
+                'Set-Cookie': seralizedCookie
+            } 
+        });
 
     } catch (error: any) {
         console.error(`An error has occured! ${error}`);

@@ -1,7 +1,7 @@
 "use client"
-import { PageProps } from '@/.next/types/app/page'
-import Link from 'next/link'
-import React, { useState } from 'react'
+import { PageProps } from '@/.next/types/app/page';
+import Link from 'next/link';
+import React, { useState } from 'react';
 import { LiaGlassMartiniAltSolid } from 'react-icons/lia';
 import { SlHome, SlUser, SlHeart, SlMenu } from 'react-icons/sl';
 
@@ -11,12 +11,12 @@ const NAV_ITEMS = [{
     icon: <SlHome size="20" />
 }, {
     label: 'Profile',
-    link: '/Profile',
+    link: '/profile',
     icon: <SlUser size="20" />
 },
 {
     label: 'Favorites',
-    link: '/Favorites',
+    link: '/favorites',
     icon: <SlHeart size="20" />
 }]
 
