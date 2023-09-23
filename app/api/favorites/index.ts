@@ -1,5 +1,5 @@
 import { getSessionCookieValue } from "@/utils";
-import { Favorite } from "@/utils/types";
+import { UserFavorites, Favorite } from "@/utils/types";
 
 
 
@@ -31,4 +31,28 @@ export const updateFavorites = async (favorites: Favorite): Promise<boolean> => 
     }
 
     return false;
+}
+
+export const getUserFavorites = async (): Promise<UserFavorites | null> => {
+    try {
+        const updateFavURL = 'http://localhost:3000/api/favorites';
+        // const getAPIUser = process.env.NEXT_GET_API_USER_URL as RequestInfo | URL;
+        const cookies = document.cookie;
+        const token = getSessionCookieValue(cookies);
+
+       const res = await fetch(updateFavURL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        if(res.ok){
+            return res.json();
+        }
+    } catch (error) {
+        console.error('Get Account Info Error', error);
+    }
+    return null;
 }

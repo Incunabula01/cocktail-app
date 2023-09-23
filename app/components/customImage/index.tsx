@@ -13,7 +13,7 @@ export default function CustomImage({ src, alt, height, width }: CustomImageProp
     const [imageSrc, setImageSrc] = useState<string>(src);
 
     useEffect(() => {
-        if(src.length){
+        if(src && src.length){
             setImageSrc(src);
         }
     }, [src]);
@@ -23,7 +23,7 @@ export default function CustomImage({ src, alt, height, width }: CustomImageProp
             <Image
                 src={imageSrc}
                 alt={alt}
-                className="sm:w-full lg:w-1/4 h-auto object-cover transition-opacity opacity-0 duration-[1.5s]"
+                className="object-cover transition-opacity opacity-0 duration-[1.5s]"
                 width={height}
                 height={width}
                 priority

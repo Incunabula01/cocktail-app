@@ -69,7 +69,6 @@ export default function Home() {
     const cookies = document.cookie;
 
     if (getSessionCookieValue(cookies)) {
-      console.log('Session cookie value:', getSessionCookieValue(cookies));
         dispatch({ type: 'LOGIN' });
     } else {
       dispatch({ type: 'LOGOUT' });
@@ -78,8 +77,8 @@ export default function Home() {
 
   return (
     <>
-      <main className="container mx-auto items-center min-h-screen flex flex-col gap-3">
-        <div className="bg-teal-50 shadow-md rounded-lg p-4 w-full" >
+     
+        <div className="p-4 w-full" >
           <Search
             onInputChange={handleInputChange}
             onSelect={handleSelect}
@@ -87,9 +86,9 @@ export default function Home() {
             searchItems={searchItems} />
         </div>
         <div className="bg-teal-50 shadow-md rounded-lg p-4 sm:w-80 lg:w-full">
-          {searchResults && <Card result={searchResults} onFavSelect={handleFavSelect}/>}
+          {searchResults && <Card result={searchResults} onFavSelect={handleFavSelect} hasFav={true}/>}
         </div>
-      </main>
+      
     </>
     
   )

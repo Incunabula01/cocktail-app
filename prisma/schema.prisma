@@ -15,22 +15,13 @@ model User {
   name String
   email String @unique
   password String
-  favorites Cocktails[]
+  favorites Favorite[]
 }
 
-model Cocktails {
+model Favorite {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  cocktail Cocktail[]
-  createdDate DateTime @default(now())
-  updatedDate DateTime @updatedAt
+  strDrinkThumb String 
+  strDrink String
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.ObjectId
-}
-
-model Cocktail {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  Cocktails Cocktails @relation(fields: [cocktailId], references: [id], onDelete: Cascade)
-  cocktailId String @db.ObjectId
-  strDrink String
-  dateModified DateTime @updatedAt
 }

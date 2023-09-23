@@ -57,16 +57,14 @@ export interface Drink {
     favorite?: boolean;
     [key: string]: any;
 }
-
-export interface Favorite {
-    idDrink: string;
-    strDrink: string;
-    [key: string]: any;
-}
-
 export interface UserFavorites {
-    email: string;
-    favorites: Favorite[];
+    userFavorites: Favorite[];
+}
+export interface Favorite {
+    id?: string
+    strDrinkThumb: string
+    strDrink: string
+    userId?: string
 }
 
 export interface UserAccount {

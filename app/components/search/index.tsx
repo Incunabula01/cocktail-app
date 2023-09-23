@@ -48,7 +48,7 @@ export default function Search({ onInputChange, onSelect, onRandom, searchItems 
                     value={query}
                     onChange={handleInputChange}
                 />
-                <button className="bg-rose-800 text-white hover:bg-rose-900  py-2 px-4 rounded-lg w-full lg:w-1/4" onClick={handleRandom}>
+                <button className="bg-rose-800 text-white hover:bg-rose-900 border py-2 px-4 rounded-lg w-full lg:w-1/4" onClick={handleRandom}>
                     I'm Feeling Lucky
                 </button>
             </div>

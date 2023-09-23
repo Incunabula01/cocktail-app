@@ -24,7 +24,15 @@ export const POST = async (req: Request) => {
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
-        const users = await prisma?.user.create({ data: { name, email, password: hashPassword } });
+        
+        const users = await prisma?.user.create({ 
+            data: { name, email, 
+                password: hashPassword, 
+                favorites: {
+                    create: []
+                }
+            } 
+        });
 
         const token = sign({ userId: users.email }, jwtKey, {
             expiresIn: TOKEN_AGE, // Token expiration time
