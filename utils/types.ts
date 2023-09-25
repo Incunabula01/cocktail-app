@@ -54,7 +54,7 @@ export interface Drink {
     strImageAttribution?: string;
     strCreativeCommonsConfirmed: string;
     dateModified?: string;
-    favorite?: boolean;
+    isFavorite: boolean;
     [key: string]: any;
 }
 export interface UserFavorites {

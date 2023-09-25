@@ -8,29 +8,34 @@ import { LiaGlassMartiniAltSolid } from 'react-icons/lia';
 import { Favorite, UserAccount } from '@/utils/types';
 import { loginUser } from '../api/login';
 import { registerUser } from '../api/signup';
-import { getUserFavorites } from '../api/favorites';
+import { getUserFavorites, deleteFavorites } from '../api/favorites';
 import Link from 'next/link';
 import { SlClose } from 'react-icons/sl';
 import CustomImage from '../components/customImage';
-
+import Loading from '../components/loading';
 
 export default function Favorites(props: PageProps) {
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
     const { state, dispatch } = useAuth();
     const [formType, setFormType] = useState('');
     const [favorites, setFavorites] = useState<Favorite[] | undefined>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const fetchFavorites = async () => {
+        try {
+            setFavorites([]);
+            setIsLoading(true);
+
+            const res = await getUserFavorites();
+    
+            setFavorites(res?.userFavorites);
+            setIsLoading(false);
+        } catch (error) {
+            console.error('get favorites error', error);
+        }
+    }
 
     useEffect(() => {
-        const fetchFavorites = async () => {
-            try {
-                const res = await getUserFavorites();
-                console.log('fetch favs', res?.userFavorites);
-                setFavorites(res?.userFavorites);
-                
-            } catch (error) {
-                console.error('get favorites error', error);
-            }
-        }
         if (state.isLoggedIn){
             fetchFavorites();
         }
@@ -55,8 +60,12 @@ export default function Favorites(props: PageProps) {
         setModalIsOpen(true);
     }
 
-    const handleDeleteFavorite = (event: React.SyntheticEvent<HTMLButtonElement>) => {
-        // use the cocktailId to delete from db
+    const handleDeleteFavorite = async  (event: React.SyntheticEvent<HTMLButtonElement>) => {
+        const res = await deleteFavorites(event.currentTarget.name);
+        if (res) {
+            console.log('favorite removed!', res);
+            setFavorites(res);
+        }
     }
 
     return (
@@ -68,24 +77,27 @@ export default function Favorites(props: PageProps) {
                         <h2 className='text-4xl text-white'>Favorite Cocktails</h2>
                     </div>
                     <div className="bg-teal-50 shadow-md rounded-lg p-4 w-1/2">
-                        <ul className='space-y-3'>
-                            {favorites?.length ? favorites.map(el => (
-                                <li key={el.id} className='rounded-lg  border-rose-700 border hover:bg-rose-100 font-semibold flex justify-between'>
-                                    <div className='flex flex-row gap-4 rounded-l-lg overflow-hidden items-center'>
-                                        <CustomImage src={el.strDrinkThumb} alt={el.strDrink} width={80} height={80}/>
-                                        <Link href={`/favorites/${el.strDrink}`} className='cursor-pointer py-4 translate-y-1'>
-                                            {el.strDrink}
-                                        </Link>
-                                    </div>
-                                   
-                                    <button onClick={handleDeleteFavorite} title='Remove Favorite' name={el.id} className='p-4'>
-                                        <SlClose size="20"/>
-                                    </button>
-                                </li>
-                            )) :
-                            <p>No Favorites available. Please add some.</p>
-                            }
-                        </ul>
+                        {isLoading ?
+                            <Loading /> :
+                            <ul className='space-y-3'>
+                                {favorites?.length ? favorites.map(el => (
+                                    <li key={el.id} className='rounded-lg  border-rose-700 border hover:bg-rose-100 font-semibold flex justify-between'>
+                                        <div className='flex flex-row gap-4 rounded-l-lg overflow-hidden items-center'>
+                                            <CustomImage src={el.strDrinkThumb} alt={el.strDrink} width={80} height={80} />
+                                            <Link href={`/favorites/${el.strDrink}`} className='cursor-pointer py-4 translate-y-1'>
+                                                {el.strDrink}
+                                            </Link>
+                                        </div>
+
+                                        <button onClick={handleDeleteFavorite} title='Remove Favorite' name={el.strDrink} className='p-4'>
+                                            <SlClose size="20" />
+                                        </button>
+                                    </li>
+                                )) :
+                                    <li><p>No Favorites available. Please add some.</p></li>
+                                }
+                            </ul>
+                        }
                     </div>
                 </>
                      :

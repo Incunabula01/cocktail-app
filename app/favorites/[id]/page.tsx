@@ -20,7 +20,7 @@ export default function CocktailPage({ params }: CocktailPageProps) {
             const urlParamId = decodeURIComponent(params.id.replace(/\+/g, " "));
             const results = await getSearchResults(urlParamId);
             
-            setSearchResults(results[0]);
+            setSearchResults(results);
         }
 
         if(params.id){

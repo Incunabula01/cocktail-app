@@ -10,7 +10,9 @@ export const connectToDb = async () => {
     }
 }
 
-export const getSessionCookieValue = (cookies: string | null) => {
+export const getSessionCookieValue = () => {
+    const cookies = document.cookie;
+    
     if (cookies?.length) {
         const cookieArray = cookies.split(';');
         const cookieObject: { [key: string]: string } = {};

@@ -1,10 +1,10 @@
-
 import { UserLogin } from "@/utils/types";
+
+const loginUserURL = process.env.NEXT_PUBLIC_LOGIN_USER_URL as RequestInfo | URL;
 
 export const loginUser = async (accouunt: UserLogin): Promise<Boolean> => {
     
     try {
-        const loginUserURL = process.env.NEXT_PUBLIC_LOGIN_USER_URL as RequestInfo | URL;
         console.log('login user', loginUserURL);
         const response = await fetch(loginUserURL, {
             method: 'POST',

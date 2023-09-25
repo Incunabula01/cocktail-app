@@ -1,14 +1,13 @@
 import { getSessionCookieValue } from "@/utils";
 import { UserFavorites, Favorite } from "@/utils/types";
 
-
+const updateFavURL = process.env.NEXT_PUBLIC_FAVORITES_URL as RequestInfo | URL;
 
 export const updateFavorites = async (favorites: Favorite): Promise<boolean> => {
     try {
-        const updateFavURL = 'http://localhost:3000/api/favorites';
         console.log('favs', JSON.stringify(favorites));
-        const cookies = document.cookie;
-        const token = getSessionCookieValue(cookies);
+        
+        const token = getSessionCookieValue();
         console.log('token', token);
         const response = await fetch(updateFavURL, {
             method: 'PUT',
@@ -35,11 +34,8 @@ export const updateFavorites = async (favorites: Favorite): Promise<boolean> => 
 
 export const getUserFavorites = async (): Promise<UserFavorites | null> => {
     try {
-        const updateFavURL = 'http://localhost:3000/api/favorites';
-        // const getAPIUser = process.env.NEXT_GET_API_USER_URL as RequestInfo | URL;
-        const cookies = document.cookie;
-        const token = getSessionCookieValue(cookies);
-
+        const token = getSessionCookieValue();
+        console.log("url", updateFavURL);
        const res = await fetch(updateFavURL, {
             method: 'GET',
             headers: {
@@ -54,5 +50,32 @@ export const getUserFavorites = async (): Promise<UserFavorites | null> => {
     } catch (error) {
         console.error('Get Account Info Error', error);
     }
+    return null;
+}
+
+export const deleteFavorites = async (strDrink: string): Promise<Favorite[] | null> => {
+    try {
+        const token = getSessionCookieValue();
+        
+        const response = await fetch(updateFavURL, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({strDrink})
+        });
+
+        if (response.ok) {
+            const { updateUser } = await response.json();
+            console.log('delete favorites', updateUser.favorites);
+            return updateUser.favorites;
+        } else {
+            console.error('Failed to delete favorites:', response.status, response.statusText);
+        }
+    } catch (error) {
+        console.error('An error occurred during the update:', error);
+    }
+
     return null;
 }

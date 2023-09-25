@@ -1,50 +1,57 @@
 import { prisma } from "@/prisma";
 import { connectToDb } from "@/utils";
 import { NextRequest, NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 
 import jwt from 'jsonwebtoken';
 
 export const PUT = async (req: NextRequest) => {
     try {
         const jwtKey = process.env.JWT_KEY || '';
-       
+
         const { strDrinkThumb, strDrink } = await req.json();
 
         const authHeader = req.headers.get('Authorization');
         const token = authHeader?.replace('Bearer ', '');
 
-        console.log('token ===>', token);
-        console.log('jwt key ===>', jwtKey);
         if (!token) {
             return NextResponse.json({ error: "Authorization header missing" }, { status: 401 });
         }
 
         const decodedToken = jwt.verify(token, jwtKey) as { userId: string };
-        // console.log('decoded token ==>', decodedToken.userId);
-        
-        // if (decodedToken['userId']) {
-        //     return NextResponse.json({ error: "Invalid token" }, { status: 403 });
-        // }
 
         await connectToDb();
 
-        const getUser = await prisma.user.findFirst({ where: { email: decodedToken.userId } });
+        const getUser = await prisma.user.findFirst({ where: { email: decodedToken.userId }, include: { favorites: true }});
         console.log('getUser', getUser);
+        
+        if(getUser){
 
-        const favorite = {
-            strDrink,
-            strDrinkThumb
-        };
+            const favorite = {
+                strDrink,
+                strDrinkThumb,
+            };
 
-        const updatedFavorites = (getUser?.favorites || []).length ? [...getUser?.favorites, favorite] : [favorite];
-        console.log('updatedFavorites', updatedFavorites);
+            const updateUser = await prisma.user.update({
+                where: { email: decodedToken.userId },
+                data: { 
+                    favorites: {
+                        upsert: {
+                            where: { 
+                                id: getUser.id 
+                            },
+                            create: favorite,
+                            update: favorite,
+                        }
+                    } 
+                }
+            });
 
-        const updateUser = await prisma.user.update({ 
-            where: { email: decodedToken.userId }, 
-            data: { favorites: { create: updatedFavorites } } 
-        });
+            return NextResponse.json({ updateUser }, { status: 200 });
+        }
 
-        return NextResponse.json({ updateUser }, { status: 200 });
+        
+        return null;
     } catch (error: any) {
         console.error(`An error has occurred! ${error}`);
         return NextResponse.json({ error: error.message }, { status: 500 });
@@ -86,38 +93,50 @@ export const DELETE = async (req: NextRequest) => {
     try {
         const jwtKey = process.env.JWT_KEY || '';
 
-        const { id } = await req.json();
+        const { strDrink } = await req.json();
 
         const authHeader = req.headers.get('Authorization');
         const token = authHeader?.replace('Bearer ', '');
 
         console.log('token ===>', token);
         console.log('jwt key ===>', jwtKey);
+        console.log('item to remove', strDrink);
+
         if (!token) {
             return NextResponse.json({ error: "Authorization header missing" }, { status: 401 });
         }
 
         const decodedToken = jwt.verify(token, jwtKey) as { userId: string };
-        // console.log('decoded token ==>', decodedToken.userId);
-
-        // if (decodedToken['userId']) {
-        //     return NextResponse.json({ error: "Invalid token" }, { status: 403 });
-        // }
 
         await connectToDb();
 
-        const getUser = await prisma.user.findFirst({ where: { email: decodedToken.userId } });
+        const getUser = await prisma.user.findUnique({ where: { email: decodedToken.userId }, include: { favorites: true } });
         console.log('getUser', getUser);
 
-        const updatedFavorites = (getUser?.favorites || []).length ? [...getUser?.favorites, favorite] : [favorite];
-        console.log('updatedFavorites', updatedFavorites);
+        if(getUser){
+            const filterFavorites = getUser.favorites.filter((item: { strDrink: string; }) => item.strDrink === strDrink);
 
-        const updateUser = await prisma.user.update({
-            where: { email: decodedToken.userId },
-            data: { favorites: { create: updatedFavorites } }
-        });
+            console.log('favorite id', filterFavorites[0].id);
+            
+            const updateUser = await prisma.user.update({
+                where: { email: decodedToken.userId },
+                data: {
+                    favorites: {
+                        delete: [{ id: filterFavorites[0].id }]
+                    },
+                },
+                include: {
+                    favorites: true
+                }
+            });
 
-        return NextResponse.json({ updateUser }, { status: 200 });
+            console.log(' updated user favorites', updateUser);
+
+
+            return NextResponse.json({ updateUser }, { status: 200 });
+        }
+        return null;
+        
     } catch (error: any) {
         console.error(`An error has occurred! ${error}`);
         return NextResponse.json({ error: error.message }, { status: 500 });

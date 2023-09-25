@@ -4,14 +4,16 @@ import Search from './components/search';
 import { useEffect, useState } from 'react';
 import { cocktailLookahead, getSearchResults, getRandomResults } from './api/search/route';
 import Card from './components/card';
-import { updateFavorites } from './api/favorites';
+import { deleteFavorites, updateFavorites } from './api/favorites';
 import { Favorite } from '@/utils/types';
 import { useAuth } from './context';
 import { getSessionCookieValue  } from '@/utils';
+import Loading from './components/loading';
 
 export default function Home() {
   const [searchItems, setSearchItems] = useState<string[]>([]);
   const [searchResults, setSearchResults] = useState<Drink>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { dispatch } = useAuth();
 
 
@@ -29,8 +31,10 @@ export default function Home() {
   const handleSelect = async (selected: string) => {
     if (selected !== '') {
       try {
+        setIsLoading(true);
         const results = await getSearchResults(selected);
-        setSearchResults(results[0]);
+        setIsLoading(false);
+        setSearchResults(results);
       } catch (error) {
         console.error('An Error occured!', error);
       } finally {
@@ -41,7 +45,9 @@ export default function Home() {
 
   const handleRandom = async () => {
     try {
+      setIsLoading(true);
       const results = await getRandomResults();
+      setIsLoading(false);
       setSearchResults(results[0]);
     } catch (error) {
       console.error('An Error occured!', error);
@@ -50,11 +56,16 @@ export default function Home() {
     }
   }
 
-  const handleFavSelect = async (fav: Favorite) => {
+  const handleFavSelect = async (fav: Favorite, isFav: boolean) => {
    try {
-     const response = await updateFavorites(fav);
+     let response;
+     if (isFav) {
+       response = await updateFavorites(fav);
+     } else {
+        response = await deleteFavorites(fav.strDrink);
+     }
      if(response){
-      console.log('Favorite successfully saved!')
+      console.log('Favorite successfully edited!')
      }
    } catch (error) {
      console.error('An Error occured!', error);
@@ -66,9 +77,7 @@ export default function Home() {
       handleRandom();
     }
 
-    const cookies = document.cookie;
-
-    if (getSessionCookieValue(cookies)) {
+    if (getSessionCookieValue()) {
         dispatch({ type: 'LOGIN' });
     } else {
       dispatch({ type: 'LOGOUT' });
@@ -77,18 +86,19 @@ export default function Home() {
 
   return (
     <>
-     
-        <div className="p-4 w-full" >
-          <Search
-            onInputChange={handleInputChange}
-            onSelect={handleSelect}
-            onRandom={handleRandom}
-            searchItems={searchItems} />
-        </div>
-        <div className="bg-teal-50 shadow-md rounded-lg p-4 sm:w-80 lg:w-full">
-          {searchResults && <Card result={searchResults} onFavSelect={handleFavSelect} hasFav={true}/>}
-        </div>
-      
+      <div className="p-4 w-full" >
+        <Search
+          onInputChange={handleInputChange}
+          onSelect={handleSelect}
+          onRandom={handleRandom}
+          searchItems={searchItems} />
+      </div>
+      <div className="bg-teal-50 shadow-md rounded-lg p-4 sm:w-80 lg:w-full">
+        {isLoading ? 
+          <Loading/> :
+          searchResults && <Card result={searchResults} onFavSelect={handleFavSelect} hasFav={true} />
+        }
+      </div>
     </>
     
   )

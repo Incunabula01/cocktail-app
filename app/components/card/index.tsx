@@ -1,17 +1,24 @@
 "use client";
 import { Drink, Favorite } from '@/utils/types';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CustomImage from '../customImage';
 import { IoHeartOutline, IoHeart } from 'react-icons/io5';
 
 type CardProps = {
     result: Drink;
     hasFav: boolean;
-    onFavSelect?: (fav: Favorite) => void;
+    onFavSelect?: (fav: Favorite, state: boolean) => void;
 }
 
 export default function Card({ result, onFavSelect, hasFav = true }: CardProps) {
     const [resultData, setResultData] = useState<Drink>();
+    const [favorite, setFavorite] = useState<boolean>(false);
+
+    const handleFavSelect = ({ strDrinkThumb, strDrink }: Favorite): void => {
+        onFavSelect?.({ strDrinkThumb, strDrink }, !favorite);
+        setFavorite(!favorite);
+        console.log('favorite 1?', favorite);
+    }
 
     useMemo(() => {
         if(result){
@@ -29,13 +36,15 @@ export default function Card({ result, onFavSelect, hasFav = true }: CardProps) 
                 }
             }
             const formatedResults = { ...result, ingredients: ingredientArray };
+            setFavorite(result.isFavorite);
             setResultData(formatedResults);
+            console.log('favorite 2?', favorite);
         }
     }, [result]);
-
+    
     if(resultData) {
-        const { strDrink, strInstructions, strDrinkThumb, favorite, ingredients, strGlass, strAlcoholic } = resultData;
-
+        const { strDrink, strInstructions, strDrinkThumb, ingredients, strGlass, strAlcoholic } = resultData;
+        
         return (
             <>
                 {resultData &&
@@ -47,8 +56,8 @@ export default function Card({ result, onFavSelect, hasFav = true }: CardProps) 
                             <div className="flex flex-row  justify-between">
                                 <h2 className="text-2xl lg:text-6xl font-semibold">{strDrink}</h2>
                                 {hasFav &&
-                                    <button onClick={() => onFavSelect && onFavSelect({ strDrinkThumb, strDrink })}>
-                                        {favorite ? <IoHeart size="20" /> : <IoHeartOutline size="20" />}
+                                    <button onClick={() => handleFavSelect({ strDrinkThumb , strDrink})}>
+                                        {favorite ? (<IoHeart size="20" />) : (<IoHeartOutline size="20" />)}
                                     </button>
                                 }
                             </div>
