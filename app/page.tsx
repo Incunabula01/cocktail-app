@@ -86,14 +86,16 @@ export default function Home() {
 
   return (
     <>
-      <div className="p-4 w-full" >
+      <div className=" w-full" >
         <Search
           onInputChange={handleInputChange}
           onSelect={handleSelect}
           onRandom={handleRandom}
           searchItems={searchItems} />
       </div>
-      <div className="bg-teal-50 shadow-md rounded-lg p-4 sm:w-80 lg:w-full">
+      <hr className='w-full mt-3'/>
+      <div className="flex justify-center items-center sm:min-h-[100vh] lg:min-h-[60vh] w-full">
+        
         {isLoading ? 
           <Loading/> :
           searchResults && <Card result={searchResults} onFavSelect={handleFavSelect} hasFav={true} />

@@ -30,4 +30,5 @@ export const getSessionCookieValue = () => {
 
 export const TOKEN_AGE = 60 * 60 * 24 * 30;
 
-
+// TODO:
+// Create sessionStorage util function for clearing and checking

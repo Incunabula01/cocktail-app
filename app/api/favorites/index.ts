@@ -5,8 +5,8 @@ const updateFavURL = process.env.NEXT_PUBLIC_FAVORITES_URL as RequestInfo | URL;
 
 export const updateFavorites = async (favorites: Favorite): Promise<boolean> => {
     try {
-        console.log('favs', JSON.stringify(favorites));
-        
+        // TODO:
+        // Clear sessionStorage when user adds new favorite
         const token = getSessionCookieValue();
         console.log('token', token);
         const response = await fetch(updateFavURL, {
@@ -34,6 +34,8 @@ export const updateFavorites = async (favorites: Favorite): Promise<boolean> => 
 
 export const getUserFavorites = async (): Promise<UserFavorites | null> => {
     try {
+        // TODO: 
+        // Add Session Storage > if it doesnt exist then log in with cookie
         const token = getSessionCookieValue();
         console.log("url", updateFavURL);
        const res = await fetch(updateFavURL, {
@@ -55,6 +57,8 @@ export const getUserFavorites = async (): Promise<UserFavorites | null> => {
 
 export const deleteFavorites = async (strDrink: string): Promise<Favorite[] | null> => {
     try {
+        // TODO:
+        // Clear sessionStorage when user adds new favorite
         const token = getSessionCookieValue();
         
         const response = await fetch(updateFavURL, {

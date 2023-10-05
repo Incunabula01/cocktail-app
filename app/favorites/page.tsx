@@ -73,41 +73,49 @@ export default function Favorites(props: PageProps) {
            
                 {state.isLoggedIn ? 
                 <>
-                    <div className="p-4 mb-3 w-1/2">
+                    <div className="p-4 sm:w-full lg:w-1/2">
                         <h2 className='text-4xl text-white'>Favorite Cocktails</h2>
                     </div>
-                    <div className="bg-teal-50 shadow-md rounded-lg p-4 w-1/2">
+                    <hr className='w-full'/>
+                    <div className="bg-white shadow-md rounded-lg p-4 sm:w-full lg:w-1/2">
                         {isLoading ?
                             <Loading /> :
-                            <ul className='space-y-3'>
-                                {favorites?.length ? favorites.map(el => (
-                                    <li key={el.id} className='rounded-lg  border-rose-700 border hover:bg-rose-100 font-semibold flex justify-between'>
-                                        <div className='flex flex-row gap-4 rounded-l-lg overflow-hidden items-center'>
-                                            <CustomImage src={el.strDrinkThumb} alt={el.strDrink} width={80} height={80} />
-                                            <Link href={`/favorites/${el.strDrink}`} className='cursor-pointer py-4 translate-y-1'>
-                                                {el.strDrink}
-                                            </Link>
-                                        </div>
+                            <div className="max-h-[70vh] overflow-y-scroll">
+                                <ul className='space-y-3'>
+                                    {favorites?.length ? favorites.map(el => (
+                                        <li key={el.id} className='rounded-lg  border-rose-700 border hover:bg-rose-100 font-semibold flex justify-between'>
+                                            <div className='flex flex-row gap-4 rounded-l-lg overflow-hidden items-center'>
+                                                <div className='relative w-[80px] h-[80px]'>
+                                                    <CustomImage src={el.strDrinkThumb} alt={el.strDrink} />
+                                                </div>
 
-                                        <button onClick={handleDeleteFavorite} title='Remove Favorite' name={el.strDrink} className='p-4'>
-                                            <SlClose size="20" />
-                                        </button>
-                                    </li>
-                                )) :
-                                    <li><p>No Favorites available. Please add some.</p></li>
-                                }
-                            </ul>
+                                                <Link href={`/favorites/${el.strDrink}`} className='cursor-pointer py-4 translate-y-1'>
+                                                    {el.strDrink}
+                                                </Link>
+                                            </div>
+
+                                            <button onClick={handleDeleteFavorite} title='Remove Favorite' name={el.strDrink} className='p-4'>
+                                                <SlClose size="20" />
+                                            </button>
+                                        </li>
+                                    )) :
+                                        <li><p>No Favorites available. Please add some.</p></li>
+                                    }
+                                </ul>
+                            </div>
+
+                            
                         }
                     </div>
                 </>
                      :
                     <div className = "bg-teal-50 shadow-md rounded-lg p-4 sm:w-80 lg:w-1/2 mx-auto">
                         <div className='flex flex-col justify-center items-center p-2 gap-2'>
-                            <LiaGlassMartiniAltSolid size="500" className="text-grey" />
+                            <LiaGlassMartiniAltSolid size="250" className="text-grey" />
                             <h3 className='text-rose-700 text-semibold text-2xl'>No Favorites Available</h3>
                             <p>Please login or sign up to view favorites.</p>
                             <div className="flex gap-2">
-                                <button className="bg-rose-800 text-white hover:bg-rose-900  py-2 px-4 rounded-lg" onClick={handleModal} name="login">
+                                <button className="bg-rose-600 text-white hover:bg-rose-700  py-2 px-4 rounded-lg" onClick={handleModal} name="login">
                                     Login
                                 </button>
                                 <button className="bg-rose-900 text-white hover:bg-rose-950  py-2 px-4 rounded-lg" onClick={handleModal} name="signUp">

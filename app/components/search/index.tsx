@@ -55,7 +55,7 @@ export default function Search({ onInputChange, onSelect, onRandom, searchItems 
            
             
             {(results.length > 0) && (
-                <ul className="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-md">
+                <ul className="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-md max-h-[70vh] overflow-y-scroll">
                     {results.map((result, index) => (
                         <li
                             key={index}

@@ -28,16 +28,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${montserrat.variable} ${poiretOne.variable} bg-cover bg-no-repeat relative`} style={{ backgroundImage: 'url("/bar-background.jpg")' }}>
+      <body className={`${montserrat.variable} ${poiretOne.variable} bg-rose-800 relative lg:overflow-hidden`} >
         <AuthProvider >
           <Header />
-          <div className="mt-[80px] relative z-40">
-            <main className="container mx-auto items-center min-h-screen flex flex-col gap-3">
-              {children}
+          <div className="mt-[60px] relative z-40 px-2">
+            <main className="container mx-auto  bg-cover bg-no-repeat rounded-lg" style={{ backgroundImage: 'url("/bar-background.jpg")', backgroundSize: 'cover' }}>
+              <div className='flex flex-col items-center mx-auto gap-2 rounded-lg backdrop-blur p-4 md:min-h-[80vh]' style={{ backgroundColor: 'rgba(159,18,57, 0.4)'}}>
+                {children}
+              </div>
+              
             </main>
           </div>
         </AuthProvider>
-        <div className="absolute -inset-[65px] bg-opacity-80 bg-rose-800 "></div>
+       
       </body>
     </html>
   )
