@@ -1,13 +1,21 @@
 "use client";
 import { Drink } from '@/utils/types';
 import Search from './components/search';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cocktailLookahead, getSearchResults, getRandomResults } from './api/search/route';
 import Card from './components/card';
+import { deleteFavorites, updateFavorites } from './api/favorites';
+import { Favorite } from '@/utils/types';
+import { useAuth } from './context';
+import { getSessionCookieValue  } from '@/utils';
+import Loading from './components/loading';
 
 export default function Home() {
-  const [searchItems, setSearchItems] = useState<string[]>([])
+  const [searchItems, setSearchItems] = useState<string[]>([]);
   const [searchResults, setSearchResults] = useState<Drink>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { dispatch } = useAuth();
+
 
   const handleInputChange = async (input: string) => {
     if(input !== ''){
@@ -23,8 +31,10 @@ export default function Home() {
   const handleSelect = async (selected: string) => {
     if (selected !== '') {
       try {
+        setIsLoading(true);
         const results = await getSearchResults(selected);
-        setSearchResults(results[0]);
+        setIsLoading(false);
+        setSearchResults(results);
       } catch (error) {
         console.error('An Error occured!', error);
       } finally {
@@ -35,7 +45,9 @@ export default function Home() {
 
   const handleRandom = async () => {
     try {
+      setIsLoading(true);
       const results = await getRandomResults();
+      setIsLoading(false);
       setSearchResults(results[0]);
     } catch (error) {
       console.error('An Error occured!', error);
@@ -44,21 +56,52 @@ export default function Home() {
     }
   }
 
+  const handleFavSelect = async (fav: Favorite, isFav: boolean) => {
+   try {
+     let response;
+     if (isFav) {
+       response = await updateFavorites(fav);
+     } else {
+        response = await deleteFavorites(fav.strDrink);
+     }
+     if(response){
+      console.log('Favorite successfully edited!')
+     }
+   } catch (error) {
+     console.error('An Error occured!', error);
+   }
+  }
+
+  useEffect(() => {
+    if(!searchResults){
+      handleRandom();
+    }
+
+    if (getSessionCookieValue()) {
+        dispatch({ type: 'LOGIN' });
+    } else {
+      dispatch({ type: 'LOGOUT' });
+    }
+  }, []);
+
   return (
-    <main className="container mx-auto items-center min-h-screen flex flex-col gap-3 mt-[80px]">
-      <div className="bg-teal-50 shadow-md rounded-lg p-4 w-full" >
-        <Search 
-          onInputChange={handleInputChange} 
+    <>
+      <div className=" w-full" >
+        <Search
+          onInputChange={handleInputChange}
           onSelect={handleSelect}
-          onRandom={handleRandom} 
-          searchItems={searchItems}/>
-        </div>
-      <div className="bg-teal-50 shadow-md rounded-lg p-4 sm:w-80 lg:w-full">
-          {searchResults !== undefined ? 
-            <Card result={searchResults}/> :
-            <div>No Results Found!</div>
-          }
-        </div>
-    </main>
+          onRandom={handleRandom}
+          searchItems={searchItems} />
+      </div>
+      <hr className='w-full mt-3'/>
+      <div className="flex justify-center items-center sm:min-h-[100vh] lg:min-h-[60vh] w-full">
+        
+        {isLoading ? 
+          <Loading/> :
+          searchResults && <Card result={searchResults} onFavSelect={handleFavSelect} hasFav={true} />
+        }
+      </div>
+    </>
+    
   )
 }

@@ -1,4 +1,5 @@
 import { Drink } from "@/utils/types";
+import { getUserFavorites } from "../favorites";
 
 export async function cocktailLookahead(query:string) {
     console.log('API URL', process.env.NEXT_PUBLIC_API_URL);
@@ -20,7 +21,11 @@ export async function getSearchResults(query: string) {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}search.php?s=${query}`);
             const resJSON = await response.json();
-            return resJSON.drinks;
+            const getFavorites = await getUserFavorites();
+
+            const isFavorite = getFavorites?.userFavorites.find(item => item.strDrink === query) ? true : false;
+            
+            return { ...resJSON.drinks[0], isFavorite };
 
         } catch (error) {
             console.error('Unexpected error has occured!', error);

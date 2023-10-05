@@ -54,5 +54,29 @@ export interface Drink {
     strImageAttribution?: string;
     strCreativeCommonsConfirmed: string;
     dateModified?: string;
+    isFavorite: boolean;
+    [key: string]: any;
+}
+export interface UserFavorites {
+    userFavorites: Favorite[];
+}
+export interface Favorite {
+    id?: string
+    strDrinkThumb: string
+    strDrink: string
+    userId?: string
+}
+
+export interface UserAccount {
+    name: string;
+    email: string;
+    password: string;
+    favorites?: Favorite[];
+    [key: string]: any;
+}
+
+export interface UserLogin {
+    name: string;
+    email: string;
     [key: string]: any;
 }

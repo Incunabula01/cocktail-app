@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Montserrat, Poiret_One } from 'next/font/google';
 import Header from './components/header';
+import { AuthProvider } from './context';
 
 const montserrat = Montserrat({
   weight: ['100', '300', '600'],
@@ -27,9 +28,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${montserrat.variable} ${poiretOne.variable} bg-rose-800`}>
-        <Header/>
-        {children}
+      <body className={`${montserrat.variable} ${poiretOne.variable} bg-rose-800 relative lg:overflow-hidden`} >
+        <AuthProvider >
+          <Header />
+          <div className="mt-[60px] relative z-40 px-2">
+            <main className="container mx-auto  bg-cover bg-no-repeat rounded-lg" style={{ backgroundImage: 'url("/bar-background.jpg")', backgroundSize: 'cover' }}>
+              <div className='flex flex-col items-center mx-auto gap-2 rounded-lg backdrop-blur p-4 md:min-h-[80vh]' style={{ backgroundColor: 'rgba(159,18,57, 0.4)'}}>
+                {children}
+              </div>
+              
+            </main>
+          </div>
+        </AuthProvider>
+       
       </body>
     </html>
   )
