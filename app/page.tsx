@@ -2,7 +2,7 @@
 import { Drink } from '@/utils/types';
 import Search from './components/search';
 import { useEffect, useState } from 'react';
-import { cocktailLookahead, getSearchResults, getRandomResults } from './api/search/route';
+import { cocktailLookahead, getSearchResults, getRandomResults } from './api/search/';
 import Card from './components/card';
 import { deleteFavorites, updateFavorites } from './api/favorites';
 import { Favorite } from '@/utils/types';
@@ -87,6 +87,7 @@ export default function Home() {
       localStorage.setItem('userName', '');
       dispatch(logOut());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

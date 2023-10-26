@@ -18,8 +18,6 @@ export const updateFavorites = async (favorites: Favorite): Promise<boolean> => 
         });
 
         if (response.ok) {
-            const { updatedUser } = await response.json();
-            console.log('updateFavorites', updatedUser);
             return true;
         } else {
             console.error('Failed to update favorites:', response.status, response.statusText);
@@ -36,7 +34,7 @@ export const getUserFavorites = async (): Promise<UserFavorites | null> => {
         // TODO: 
         // Add Session Storage > if it doesnt exist then log in with cookie
         const token = getSessionCookieValue();
-        console.log("url", updateFavURL);
+       
        const res = await fetch(updateFavURL, {
             method: 'GET',
             headers: {

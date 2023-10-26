@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Drink } from '@/utils/types';
-import { getSearchResults } from '../../api/search/route';
+import { getSearchResults } from '../../api/search';
 import Card from '../../components/card';
 import Loading from '@/app/components/loading';
 
