@@ -17,7 +17,7 @@ export const POST = async (req: Request) => {
         await connectToDb();
 
         const existingUser = await prisma.user.findFirst({ where: { email } });
-
+        
         if (!existingUser) {
             return NextResponse.json({ message: "User not registered" }, { status: 401 });
         }
@@ -26,6 +26,7 @@ export const POST = async (req: Request) => {
         if (!checkPassword) {
             return NextResponse.json({ message: "Invalid Password" }, { status: 403 });
         }
+        
         const token = sign({ userId: existingUser.email }, jwtKey, {
             expiresIn: TOKEN_AGE, // Token expiration time
         });
@@ -37,7 +38,7 @@ export const POST = async (req: Request) => {
             path: '/'
         });
 
-        return NextResponse.json({ message: "Logged in!", token }, {
+        return NextResponse.json({ message: "Logged in!", token, userName: existingUser.name }, {
             status: 201, 
             headers: {
                 'Set-Cookie': seralizedCookie

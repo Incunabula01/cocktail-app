@@ -1,7 +1,6 @@
 import { prisma } from "@/prisma";
 import { connectToDb } from "@/utils";
 import { NextRequest, NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 
 import jwt from 'jsonwebtoken';
 

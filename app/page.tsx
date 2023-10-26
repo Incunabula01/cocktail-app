@@ -6,16 +6,18 @@ import { cocktailLookahead, getSearchResults, getRandomResults } from './api/sea
 import Card from './components/card';
 import { deleteFavorites, updateFavorites } from './api/favorites';
 import { Favorite } from '@/utils/types';
-import { useAuth } from './context';
+// import { useAuth } from './context';
+import { useDispatch } from 'react-redux';
+import { logIn, logOut } from '@/store/authReducer';
 import { getSessionCookieValue  } from '@/utils';
 import Loading from './components/loading';
+import { showToast } from '@/store/notificationReducer';
 
 export default function Home() {
   const [searchItems, setSearchItems] = useState<string[]>([]);
   const [searchResults, setSearchResults] = useState<Drink>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { dispatch } = useAuth();
-
+  const dispatch = useDispatch();
 
   const handleInputChange = async (input: string) => {
     if(input !== ''){
@@ -61,8 +63,10 @@ export default function Home() {
      let response;
      if (isFav) {
        response = await updateFavorites(fav);
+       dispatch(showToast({ message: `${fav.strDrink} has been added to favorites!`,type: 'success' }));
      } else {
         response = await deleteFavorites(fav.strDrink);
+       dispatch(showToast({ message: `${fav.strDrink} has been removed from favorites!`, type: 'success' }));
      }
      if(response){
       console.log('Favorite successfully edited!')
@@ -78,9 +82,10 @@ export default function Home() {
     }
 
     if (getSessionCookieValue()) {
-        dispatch({ type: 'LOGIN' });
+      dispatch(logIn({ isLoggedIn: true, user: localStorage.getItem('userName') }));
     } else {
-      dispatch({ type: 'LOGOUT' });
+      localStorage.setItem('userName', '');
+      dispatch(logOut());
     }
   }, []);
 

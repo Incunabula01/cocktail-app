@@ -8,7 +8,6 @@ export const updateFavorites = async (favorites: Favorite): Promise<boolean> => 
         // TODO:
         // Clear sessionStorage when user adds new favorite
         const token = getSessionCookieValue();
-        console.log('token', token);
         const response = await fetch(updateFavURL, {
             method: 'PUT',
             headers: {

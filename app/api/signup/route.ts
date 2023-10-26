@@ -44,9 +44,10 @@ export const POST = async (req: Request) => {
             maxAge: TOKEN_AGE,
             path: '/'
         });
+        const userName = users.name;
 
         return NextResponse.json({ 
-            users
+            userName
         }, { 
             status: 201,
             headers: {

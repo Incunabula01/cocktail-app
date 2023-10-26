@@ -9,19 +9,22 @@ const navItems = [{
     label: 'Home',
     link: '/',
     icon: <SlHome size="20" />
-}, {
-    label: 'Profile',
-    link: '/profile',
-    icon: <SlUser size="20" />
-},
+}, 
 {
     label: 'Favorites',
     link: '/favorites',
     icon: <SlHeart size="20" />
-}]
+},
+{
+    label: 'Profile',
+    link: '/profile',
+    icon: <SlUser size="20" />
+},
+]
 
 export default function Header(props: PageProps) {
     const [openMenu, setOpenMenu] = useState<boolean>(false);
+
     return (
         <>
             <header className="bg-teal-50 py-4 fixed w-full top-0 z-50">
@@ -38,13 +41,10 @@ export default function Header(props: PageProps) {
                         </Link>
                     </div>
                    
-
-
                     <nav className="hidden lg:flex space-x-4">
                         {navItems.map((el, idx) => (
                             <Link href={el.link} key={`${el.label}-${idx}`} className="text-rose-800 flex flex-row gap-2 hover:text-rose-950">
-                                {el.icon}
-                                <p>{el.label}</p>
+                                {el.icon} {el.label}
                             </Link>
                         ))}
                     </nav>
