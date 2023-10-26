@@ -11,7 +11,7 @@ const Toast = () => {
     const { message, type } = useSelector((state: RootState) => state.notifications);
     
     useEffect(() => {
-        if (message) {
+        if (message && type) {
             toast[type](message, {
                 position: 'top-center',
                 autoClose: 3000,

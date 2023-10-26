@@ -2,7 +2,7 @@ import { Drink } from "@/utils/types";
 import { getUserFavorites } from "../favorites";
 
 export async function cocktailLookahead(query:string) {
-    console.log('API URL', process.env.NEXT_PUBLIC_API_URL);
+   
     if(query !== ''){
         
         try {
