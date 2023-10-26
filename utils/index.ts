@@ -1,6 +1,9 @@
 import { prisma } from "@/prisma";
-import { parse } from 'cookie';
-import { NextApiRequest } from "next";
+import * as Yup from 'yup';
+import jwt from 'jsonwebtoken';
+
+const jwtKey = process.env.JWT_KEY || '';
+
 
 export const connectToDb = async () => {
     try {
@@ -9,6 +12,7 @@ export const connectToDb = async () => {
         return new Error('Can not connect to db', error.message);
     }
 }
+
 
 export const getSessionCookieValue = () => {
     const cookies = document.cookie;
@@ -21,8 +25,6 @@ export const getSessionCookieValue = () => {
             const [name, value] = cookie.trim().split('=');
             cookieObject[name] = value;
         }
-
-        // Access a specific session cookie by name
         return cookieObject['OutSiteJWT'];
     }
     return null;
@@ -30,5 +32,13 @@ export const getSessionCookieValue = () => {
 
 export const TOKEN_AGE = 60 * 60 * 24 * 30;
 
-// TODO:
-// Create sessionStorage util function for clearing and checking
+export const signUpSchema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    email: Yup.string().email('Invalid email format').required('Email is required'),
+    password: Yup.string().required('Password is required')
+});
+
+export const loginSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email format').required('Email is required'),
+    password: Yup.string().required('Password is required')
+});

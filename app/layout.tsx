@@ -1,8 +1,10 @@
+"use client";
 import './globals.css';
-import type { Metadata } from 'next';
 import { Montserrat, Poiret_One } from 'next/font/google';
 import Header from './components/header';
-import { AuthProvider } from './context';
+import { Provider } from 'react-redux';
+import store from '../store';
+import Toast from './components/toast';
 
 const montserrat = Montserrat({
   weight: ['100', '300', '600'],
@@ -16,11 +18,6 @@ const poiretOne = Poiret_One({
   variable: '--font-poiret-one'
 });
 
-export const metadata: Metadata = {
-  title: 'Cocktail App',
-  description: 'Cocktail app using the cocktail app api',
-}
-
 export default function RootLayout({
   children,
 }: {
@@ -29,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${poiretOne.variable} bg-rose-800 relative lg:overflow-hidden`} >
-        <AuthProvider >
+        <Provider store={store} >
           <Header />
           <div className="mt-[60px] relative z-40 px-2">
             <main className="container mx-auto  bg-cover bg-no-repeat rounded-lg" style={{ backgroundImage: 'url("/bar-background.jpg")', backgroundSize: 'cover' }}>
@@ -39,8 +36,8 @@ export default function RootLayout({
               
             </main>
           </div>
-        </AuthProvider>
-       
+          <Toast />
+        </Provider>
       </body>
     </html>
   )

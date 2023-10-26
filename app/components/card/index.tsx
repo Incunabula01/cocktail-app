@@ -18,7 +18,6 @@ export default function Card({ result, onFavSelect, hasFav = true }: CardProps) 
     const handleFavSelect = ({ strDrinkThumb, strDrink }: Favorite): void => {
         onFavSelect?.({ strDrinkThumb, strDrink }, !favorite);
         setFavorite(!favorite);
-        console.log('favorite 1?', favorite);
     }
 
     useMemo(() => {

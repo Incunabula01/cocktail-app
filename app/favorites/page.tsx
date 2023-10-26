@@ -3,23 +3,24 @@ import React, { useEffect, useState } from 'react';
 import { PageProps } from "@/.next/types/app/page";
 import Modal from '../components/modal';
 import LoginForm from '../components/login';
-import { useAuth } from '../context';
+import { useSelector } from 'react-redux';
+import {RootState} from '@/store';
 import { LiaGlassMartiniAltSolid } from 'react-icons/lia';
-import { Favorite, UserAccount } from '@/utils/types';
-import { loginUser } from '../api/login';
-import { registerUser } from '../api/signup';
+import { Favorite } from '@/utils/types';
 import { getUserFavorites, deleteFavorites } from '../api/favorites';
 import Link from 'next/link';
 import { SlClose } from 'react-icons/sl';
 import CustomImage from '../components/customImage';
 import Loading from '../components/loading';
+import SignupForm from '../components/signup';
 
 export default function Favorites(props: PageProps) {
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-    const { state, dispatch } = useAuth();
     const [formType, setFormType] = useState('');
     const [favorites, setFavorites] = useState<Favorite[] | undefined>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const authState = useSelector((state: RootState) => state.auth.isLoggedIn);
 
     const fetchFavorites = async () => {
         try {
@@ -36,25 +37,13 @@ export default function Favorites(props: PageProps) {
     }
 
     useEffect(() => {
-        if (state.isLoggedIn){
+        if (authState){
             fetchFavorites();
+            setModalIsOpen(false);
         }
         
-    }, [state]);
+    }, [authState]);
 
-    const handleSubmit = async (account: UserAccount, type: string) => {
-        let response;
-        if (type === 'login'){
-            response = await loginUser(account);
-        } else {
-            response = await registerUser(account);
-        }
-        
-        if(response){
-            dispatch({ type: 'LOGIN' });
-        }
-        setModalIsOpen(false);
-    }
     const handleModal = (event:React.SyntheticEvent<HTMLButtonElement>) => {
         setFormType(event.currentTarget.name);
         setModalIsOpen(true);
@@ -71,7 +60,7 @@ export default function Favorites(props: PageProps) {
     return (
         <>
            
-                {state.isLoggedIn ? 
+            {authState ? 
                 <>
                     <div className="p-4 sm:w-full lg:w-1/2">
                         <h2 className='text-4xl text-white'>Favorite Cocktails</h2>
@@ -128,7 +117,10 @@ export default function Favorites(props: PageProps) {
             }
            
             <Modal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>
-                <LoginForm onSubmit={(account, type) => handleSubmit(account, type)} formType={formType}/>
+                {formType === 'login' ?
+                    <LoginForm /> :
+                    <SignupForm/>
+                }
             </Modal>
         </>
     )

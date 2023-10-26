@@ -33,9 +33,12 @@ export default function CocktailPage({ params }: CocktailPageProps) {
         <>  
             {loading ? 
                 <Loading/> :
-                <div className="flex justify-center items-center lg:h-[80vh] w-full">
-                    {searchResults && <Card result={searchResults} hasFav={false} />}
-                </div>
+                <>
+                    
+                    <div className="flex justify-center items-center lg:h-[80vh] w-full">
+                        {searchResults && <Card result={searchResults} hasFav={false} />}
+                    </div>
+                </>
             }
         </>
     )
