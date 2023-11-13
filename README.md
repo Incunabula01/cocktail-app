@@ -15,6 +15,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 The production version of the project is hosted on Vercel: [Cocktail Finder](https://cocktail-app-mu.vercel.app/)
 
+Please report any bugs to my email with the message 'Cocktail App Bug [Bug-type]':
+[Joe Widener](jwidener08@gmail.com)
+
 
 
 
